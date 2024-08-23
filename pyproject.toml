@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "api-rest-base-python"
+version = "0.1.0"
+description = ""
+authors = ["Ramiro Tepehua <rtcface@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.112.0"
+uvicorn = {extras = ["standard"], version = "^0.30.5"}
+python-multipart = "^0.0.9"
+pyjwt = "^2.9.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+autopep8 = "^2.3.1"
+psycopg = {extras = ["binary", "pool"], version = "^3.2.1"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
