@@ -10,7 +10,7 @@ class Users(Base):
     __tablename__ = 'catUsers'
 
     nId = Column(Integer, primary_key=True)
-    cName = Column(String(150))
+    cNombre = Column(String(150))
     cApellido = Column(String(150))
     cEmail = Column(String(250), unique=True)
     cPassword = Column(String(50))

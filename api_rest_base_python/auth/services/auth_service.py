@@ -15,8 +15,5 @@ crypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class User(BaseModel):
     cName: str
     cEmail: str
+    cPassword: str
     bIsActive: bool
-
-class UserInDB(User):
-    id: int
-    password: str

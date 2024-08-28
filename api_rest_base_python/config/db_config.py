@@ -3,15 +3,10 @@ from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker 
 from decouple import config
 
-url = URL(
-    drivername=config("DB_DRIVER"),
-    username=config("POSTGRES_USER"),
-    password=config("POSTGRES_PASSWORD"),
-    host=config("POSTGRES_HOST"),
-    port=config("POSTGRES_PORT"),
-    database=config("POSTGRES_DB"),
-)
 
+#nurl = "postgresql+psycopg://postgres:postgres@localhost:5432/postgres"
+
+url = URL.create(config("DB_DRIVER"), config("POSTGRES_USER"), config("POSTGRES_PASSWORD"), config("POSTGRES_HOST"), config("POSTGRES_PORT"), config("POSTGRES_DB"))
 engine = create_engine(url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 session = SessionLocal()
