@@ -2,7 +2,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from decouple import config
-app = FastAPI()
+from utils.init_db import init_db
+from router.api import router 
+
+app = FastAPI(
+    debug=True,
+    title="FastAPI",
+    description="FastAPI",
+)
 
 origins = [
     "http://localhost:3000",
@@ -20,6 +27,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup() -> None:
+    """Start the application."""
+    init_db()
+
+
+app.include_router(router)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
