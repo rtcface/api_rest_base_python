@@ -14,7 +14,7 @@ class Users(Base):
     cNombre = Column(String(150))
     cApellido = Column(String(150))
     cEmail = Column(String(250), unique=True)
-    cPassword = Column(String(50))
+    cPassword = Column(String(250))
     dAlta = Column(DateTime, default=datetime.datetime.now)
     bIsActive = Column(Boolean, default=True)
 

@@ -28,7 +28,16 @@ class UserRepository:
         except Exception as e:
             self.session.rollback()
             raise e
-    
+
+    def user_exists_by_email(self, email: str) -> bool:
+        try:
+            user = self.session.query(Users).filter(Users.cEmail == email).first()
+            if user is None:
+                return False
+            return True
+        except Exception as e:
+            return False
+
     def get(self, uuid: UUID4) -> UserOutput:
         try:
             user = self.session.query(Users).filter(Users.uuid == uuid).first()
