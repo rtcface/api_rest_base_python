@@ -18,6 +18,8 @@ class UserOutput(UserBase):
     dFechaModificacion: datetime
     dFechaBaja: Optional[datetime]=None
 
+class UserValidaLogin(UserOutput):
+    cPassword: str = Field(..., alias="password")
 
 class UpdateUserInput(UserBase):
     uuid: UUID4 = Field(..., alias="uuid")

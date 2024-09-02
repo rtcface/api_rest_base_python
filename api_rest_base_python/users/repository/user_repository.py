@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 from users.models.users_model import Users 
-from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput
+from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput, UserValidaLogin
 from typing import List, Optional, Type
 from pydantic import ValidationError, UUID4
 from datetime import datetime, timezone
@@ -63,7 +64,10 @@ class UserRepository:
             )
         except Exception as e:
             raise e
-    
+
+    def get_user_by_email(self, email: str) -> UserValidaLogin:
+        return self.session.query(Users).filter(and_(Users.cEmail == email, Users.bIsActive == True)).first()
+        
     def update(self, user_input: UpdateUserInput) -> UserOutput:
         try:
             fecha = datetime.utcnow()
