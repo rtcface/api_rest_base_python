@@ -1,19 +1,10 @@
-from passlib.context import CryptContext
-from pydantic import BaseModel
-from fastapi import HTTPException, status
-from datetime import datetime, timedelta
-import jwt
-from jwt.exceptions import InvalidTokenError
-from decouple import config
+from datetime import timedelta
 
-SCRET_KEY = config("SECRET_KEY")
-ALGORITHM = config("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = config("ACCESS_TOKEN_EXPIRE_MINUTES")
+from fastapi import HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import UUID4
+from sqlalchemy.orm import Session
 
-crypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-class User(BaseModel):
-    cName: str
-    cEmail: str
-    cPassword: str
-    bIsActive: bool
+from security import get_password_hash, pwd_context, create_access_token
+from config.settings import settings
+from users.repository.user_repository import UserRepository

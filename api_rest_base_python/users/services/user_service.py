@@ -34,8 +34,11 @@ class UserService:
     def update(self, user: UpdateUserInput) -> UserOutput:
         return self.repository.update(user)
     
-    def delete(self, user: DeleteUserInput) -> None:
-        self.repository.delete(user)
+    def disable(self, user: DeleteUserInput) -> None:
+        self.repository.disable(user)
+
+    def enable(self, user: DeleteUserInput) -> UserOutput:
+        return self.repository.enable(user)
     
     def get_all(self) -> List[UserOutput]:
         return self.repository.get_all()

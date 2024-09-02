@@ -32,7 +32,12 @@ def update_user(user: UpdateUserInput, db: Session = Depends(get_db)):
 @router.delete("/{uuid}", response_model=None)
 def delete_user(user: DeleteUserInput, db: Session = Depends(get_db)):
     _service = UserService(db)
-    return _service.delete(user)
+    return _service.disable(user)
+# Funcion para habilitar un usuario
+@router.post("/enable/{uuid}", response_model=UserOutput)
+def enable_user(user: DeleteUserInput, db: Session = Depends(get_db)):
+    _service = UserService(db)
+    return _service.enable(user)
 
 @router.get("/", response_model=List[UserOutput])
 def get_all_users(db: Session = Depends(get_db)):

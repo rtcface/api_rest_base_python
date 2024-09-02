@@ -3,21 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from decouple import config
 from utils.init_db import init_db
-from router.api import router 
+from router.api import router
+from config.settings import settings
 
 app = FastAPI(
-    debug=True,
-    title="FastAPI",
+    debug=bool(settings.DEBUG),
+    title=settings.TITLE,
     description="FastAPI",
 )
 
-origins = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:8080",
-    "http://localhost:5000",
-    "http://localhost:4200",
-]
+if settings.DEBUG:
+    origins = ["*"]
+else:
+    origins = [
+        str(origin).strip(",") for origin in settings.CORS_ALLOWED_ORIGINS
+    ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -37,7 +37,7 @@ app.include_router(router)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-Message = config("MESSAGE")
+Message = settings.TITLE
 @app.get("/")
 def root():
     return {"Api": Message}

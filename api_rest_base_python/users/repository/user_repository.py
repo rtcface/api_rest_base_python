@@ -3,6 +3,8 @@ from users.models.users_model import Users
 from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput
 from typing import List, Optional, Type
 from pydantic import ValidationError, UUID4
+from datetime import datetime, timezone
+import pytz
 
 class UserRepository:
     def __init__(self, session: Session):
@@ -20,10 +22,15 @@ class UserRepository:
             self.session.commit()
             self.session.refresh(new_user)
             return UserOutput(
-                uuid=new_user.uuid,
+                id=new_user.uuid,
                 cNombre=new_user.cNombre,
                 cApellido=new_user.cApellido,
-                cEmail=new_user.cEmail
+                cEmail=new_user.cEmail,
+                bIsActive=new_user.bIsActive,
+                dFechaRegistro=new_user.dAlta,
+                dFechaModificacion=new_user.dModificacion,
+                dFechaBaja=new_user.dBaja if new_user.dBaja is not None else None
+
             )
         except Exception as e:
             self.session.rollback()
@@ -44,29 +51,93 @@ class UserRepository:
             if user is None:
                 raise ValueError(f"User with UUID {uuid} not found")
             return UserOutput(
-                uuid=user.uuid,
+                id=user.uuid,
                 cNombre=user.cNombre,
                 cApellido=user.cApellido,
-                cEmail=user.cEmail
+                cEmail=user.cEmail,
+                bIsActive=user.bIsActive,
+                dFechaRegistro=user.dAlta,
+                dFechaModificacion=user.dModificacion,
+                dFechaBaja=user.dBaja if user.dBaja is not None else None
+
             )
         except Exception as e:
             raise e
     
     def update(self, user_input: UpdateUserInput) -> UserOutput:
         try:
+            fecha = datetime.utcnow()
+            fecha = fecha.astimezone( pytz.timezone('America/Mexico_City'))
+
             user = self.session.query(Users).filter(Users.uuid == user_input.uuid).first()
             if user is None:
                 raise ValueError(f"User with UUID {user_input.uuid} not found")
             user.cNombre = user_input.cNombre if user_input.cNombre is not None else user.cNombre
             user.cApellido = user_input.cApellido if user_input.cApellido is not None else user.cApellido
             user.cEmail = user_input.cEmail if user_input.cEmail is not None else user.cEmail
+            user.dModificacion = fecha
             self.session.commit()
             self.session.refresh(user)
             return UserOutput(
-                uuid=user.uuid,
+                id=user.uuid,
                 cNombre=user.cNombre,
                 cApellido=user.cApellido,
-                cEmail=user.cEmail
+                cEmail=user.cEmail,
+                bIsActive=user.bIsActive,
+                dFechaRegistro=user.dAlta,
+                dFechaModificacion=user.dModificacion,
+                dFechaBaja=user.dBaja if user.dBaja is not None else None
+            )
+        except Exception as e:
+            self.session.rollback()
+            raise e
+    # Funcion para desactivar el usuario
+    def disable(self, user_delete: DeleteUserInput) -> UserOutput:
+        try:
+            fecha = datetime.utcnow()
+            fecha = fecha.astimezone( pytz.timezone('America/Mexico_City'))
+            user = self.session.query(Users).filter(Users.uuid == user_delete.uuid).first()
+            if user is None:
+                raise ValueError(f"User with UUID {user.uuid} not found")
+            user.bIsActive = False
+            user.dModificacion = fecha
+            user.dBaja = fecha
+            self.session.commit()
+            self.session.refresh(user)
+            return UserOutput(
+                id=user.uuid,
+                cNombre=user.cNombre,
+                cApellido=user.cApellido,
+                cEmail=user.cEmail,
+                bIsActive=user.bIsActive,
+                dFechaRegistro=user.dAlta,
+                dFechaModificacion=user.dModificacion,
+                dFechaBaja=user.dBaja if user.dBaja is not None else None
+            )
+        except Exception as e:
+            self.session.rollback()
+            raise e
+    # Funcion para reactivar el usuario
+    def enable(self, user_delete: DeleteUserInput) -> UserOutput:
+        try:
+            fecha = datetime.utcnow()
+            fecha = fecha.astimezone( pytz.timezone('America/Mexico_City'))
+            user = self.session.query(Users).filter(Users.uuid == user_delete.uuid).first()
+            if user is None:
+                raise ValueError(f"User with UUID {user.uuid} not found")
+            user.bIsActive = True
+            user.dModificacion = fecha
+            self.session.commit()
+            self.session.refresh(user)
+            return UserOutput(
+                id=user.uuid,
+                cNombre=user.cNombre,
+                cApellido=user.cApellido,
+                cEmail=user.cEmail,
+                bIsActive=user.bIsActive,
+                dFechaRegistro=user.dAlta,
+                dFechaModificacion=user.dModificacion,
+                dFechaBaja=user.dBaja if user.dBaja is not None else None
             )
         except Exception as e:
             self.session.rollback()
@@ -87,10 +158,14 @@ class UserRepository:
         try:
             users = self.session.query(Users).all()
             return [UserOutput(
-                uuid=user.uuid,
+                id=user.uuid,
                 cNombre=user.cNombre,
                 cApellido=user.cApellido,
-                cEmail=user.cEmail
+                cEmail=user.cEmail,
+                bIsActive=user.bIsActive,
+                dFechaRegistro=user.dAlta,
+                dFechaModificacion=user.dModificacion,
+                dFechaBaja=user.dBaja if user.dBaja is not None else None
             ) for user in users]
         except Exception as e:
             raise e
