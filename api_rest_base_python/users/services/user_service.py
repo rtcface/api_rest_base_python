@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 from users.repository.user_repository import UserRepository
-from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput
+from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput, GetUserByUuid
 from auth.services.validate_password import ValidatePassword
 from auth.services.email_validator import EmailValidator
 from auth.services.security import get_password_hash
@@ -28,8 +28,8 @@ class UserService:
         user.cPassword = hashed_password
         return self.repository.create(user)
     
-    def get(self, uuid: UUID4) -> UserOutput:
-        return self.repository.get(uuid)
+    def get(self, user: GetUserByUuid) -> UserOutput:
+        return self.repository.get(user)
     
     def update(self, user: UpdateUserInput) -> UserOutput:
         return self.repository.update(user)

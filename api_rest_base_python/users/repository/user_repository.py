@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from users.models.users_model import Users 
-from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput, UserValidaLogin
+from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput, UserValidaLogin, GetUserByUuid
 from typing import List, Optional, Type
 from pydantic import ValidationError, UUID4
 from datetime import datetime, timezone
@@ -46,11 +46,11 @@ class UserRepository:
         except Exception as e:
             return False
 
-    def get(self, uuid: UUID4) -> UserOutput:
+    def get(self, user_in: GetUserByUuid) -> UserOutput:
         try:
-            user = self.session.query(Users).filter(Users.uuid == uuid).first()
+            user = self.session.query(Users).filter(Users.uuid == user_in.uuid).first()
             if user is None:
-                raise ValueError(f"User with UUID {uuid} not found")
+                raise ValueError(f"User with UUID {user_in.uuid} not found")
             return UserOutput(
                 id=user.uuid,
                 cNombre=user.cNombre,

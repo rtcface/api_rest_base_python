@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from pydantic import UUID4
 import json
 from sqlalchemy.orm import Session
 
@@ -31,5 +30,9 @@ class AuthService:
             ),
             "token_type": "bearer",
         }
+    
+    #Funcion que retorna el current user
+
+    
 
 

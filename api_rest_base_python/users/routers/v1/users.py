@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 from config.db_config import get_db
-from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput
+from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput, GetUserByUuid
 from users.services.user_service import UserService
 
 router = APIRouter(
@@ -18,10 +18,10 @@ def register_user(user: AddUserInput, db: Session = Depends(get_db)):
     _service = UserService(db)
     return _service.create(user)
 
-@router.get("/{uuid}", response_model=UserOutput)
-def get_user(uuid: UUID4, db: Session = Depends(get_db)):
+@router.get("/user", response_model=UserOutput)
+def get_user(user: GetUserByUuid, db: Session = Depends(get_db)):
     _service = UserService(db)
-    return _service.get(uuid)
+    return _service.get(user)
 
 @router.put("/", response_model=UserOutput)
 def update_user(user: UpdateUserInput, db: Session = Depends(get_db)):

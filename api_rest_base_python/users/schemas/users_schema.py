@@ -27,8 +27,11 @@ class UpdateUserInput(UserBase):
 class DeleteUserInput(BaseModel):
     uuid: UUID4 = Field(..., description="The user's UUID")
 
+class GetUserByUuid(BaseModel):
+    uuid: UUID4 = Field(..., description="The user's UUID")
+
 class TokenData(BaseModel):
-    username: Optional[str] = None
+    uuid: Optional[str] = None
 
 class TokenOutput(BaseModel):
     access_token: str
