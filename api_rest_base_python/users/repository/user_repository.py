@@ -46,11 +46,11 @@ class UserRepository:
         except Exception as e:
             return False
 
-    def get(self, user_in: GetUserByUuid) -> UserOutput:
+    def get(self, uuid: UUID4) -> UserOutput:
         try:
-            user = self.session.query(Users).filter(Users.uuid == user_in.uuid).first()
+            user = self.session.query(Users).filter(Users.uuid == uuid).first()
             if user is None:
-                raise ValueError(f"User with UUID {user_in.uuid} not found")
+                raise ValueError(f"User with UUID {uuid} not found")
             return UserOutput(
                 id=user.uuid,
                 cNombre=user.cNombre,
@@ -96,13 +96,13 @@ class UserRepository:
             self.session.rollback()
             raise e
     # Funcion para desactivar el usuario
-    def disable(self, user_delete: DeleteUserInput) -> UserOutput:
+    def disable(self, uuid: UUID4) -> UserOutput:
         try:
             fecha = datetime.utcnow()
             fecha = fecha.astimezone( pytz.timezone('America/Mexico_City'))
-            user = self.session.query(Users).filter(Users.uuid == user_delete.uuid).first()
+            user = self.session.query(Users).filter(Users.uuid == uuid).first()
             if user is None:
-                raise ValueError(f"User with UUID {user.uuid} not found")
+                raise ValueError(f"User with UUID {uuid} not found")
             user.bIsActive = False
             user.dModificacion = fecha
             user.dBaja = fecha
@@ -122,13 +122,13 @@ class UserRepository:
             self.session.rollback()
             raise e
     # Funcion para reactivar el usuario
-    def enable(self, user_delete: DeleteUserInput) -> UserOutput:
+    def enable(self, uuid: UUID4) -> UserOutput:
         try:
             fecha = datetime.utcnow()
             fecha = fecha.astimezone( pytz.timezone('America/Mexico_City'))
-            user = self.session.query(Users).filter(Users.uuid == user_delete.uuid).first()
+            user = self.session.query(Users).filter(Users.uuid == uuid).first()
             if user is None:
-                raise ValueError(f"User with UUID {user.uuid} not found")
+                raise ValueError(f"User with UUID {uuid} not found")
             user.bIsActive = True
             user.dModificacion = fecha
             self.session.commit()
@@ -147,11 +147,11 @@ class UserRepository:
             self.session.rollback()
             raise e
     
-    def delete(self, user: DeleteUserInput) -> None:
+    def delete(self, uuid: UUID4) -> None:
         try:
-            user = self.session.query(Users).filter(Users.uuid == user.uuid).first()
+            user = self.session.query(Users).filter(Users.uuid == uuid).first()
             if user is None:
-                raise ValueError(f"User with UUID {user.uuid} not found")
+                raise ValueError(f"User with UUID {uuid} not found")
             self.session.delete(user)
             self.session.commit()
         except Exception as e:

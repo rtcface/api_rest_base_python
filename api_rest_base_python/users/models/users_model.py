@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ARRAY
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base
 from config.db_config import engine
@@ -22,6 +22,8 @@ class Users(Base):
     dBaja = Column(DateTime)
     dModificacion = Column(DateTime, default=fecha)
     bIsActive = Column(Boolean, default=True)
+    cRoles = Column(ARRAY(String))
+
 
 Base.metadata.create_all(engine)
 

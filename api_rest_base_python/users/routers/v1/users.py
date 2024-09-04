@@ -18,10 +18,10 @@ def register_user(user: AddUserInput, db: Session = Depends(get_db)):
     _service = UserService(db)
     return _service.create(user)
 
-@router.get("/user", response_model=UserOutput)
-def get_user(user: GetUserByUuid, db: Session = Depends(get_db)):
+@router.get("/{uuid}", response_model=UserOutput)
+def get_user(uuid:UUID4 ,db: Session = Depends(get_db)):
     _service = UserService(db)
-    return _service.get(user)
+    return _service.get(uuid)
 
 @router.put("/", response_model=UserOutput)
 def update_user(user: UpdateUserInput, db: Session = Depends(get_db)):
@@ -30,14 +30,14 @@ def update_user(user: UpdateUserInput, db: Session = Depends(get_db)):
     return _service.update(user)
 
 @router.delete("/{uuid}", response_model=None)
-def delete_user(user: DeleteUserInput, db: Session = Depends(get_db)):
+def delete_user(uuid: UUID4, db: Session = Depends(get_db)):
     _service = UserService(db)
-    return _service.disable(user)
+    return _service.disable(uuid)
 # Funcion para habilitar un usuario
 @router.post("/enable/{uuid}", response_model=UserOutput)
-def enable_user(user: DeleteUserInput, db: Session = Depends(get_db)):
+def enable_user(uuid: UUID4, db: Session = Depends(get_db)):
     _service = UserService(db)
-    return _service.enable(user)
+    return _service.enable(uuid)
 
 @router.get("/", response_model=List[UserOutput])
 def get_all_users(db: Session = Depends(get_db)):

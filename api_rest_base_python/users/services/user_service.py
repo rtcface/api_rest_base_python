@@ -28,17 +28,17 @@ class UserService:
         user.cPassword = hashed_password
         return self.repository.create(user)
     
-    def get(self, user: GetUserByUuid) -> UserOutput:
-        return self.repository.get(user)
+    def get(self, uuid: UUID4) -> UserOutput:
+        return self.repository.get(uuid)
     
     def update(self, user: UpdateUserInput) -> UserOutput:
         return self.repository.update(user)
     
-    def disable(self, user: DeleteUserInput) -> None:
-        self.repository.disable(user)
+    def disable(self, uuid: UUID4) -> None:
+        self.repository.disable(uuid)
 
-    def enable(self, user: DeleteUserInput) -> UserOutput:
-        return self.repository.enable(user)
+    def enable(self, uuid: UUID4) -> UserOutput:
+        return self.repository.enable(uuid)
     
     def get_all(self) -> List[UserOutput]:
         return self.repository.get_all()
