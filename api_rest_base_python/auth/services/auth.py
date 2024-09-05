@@ -40,5 +40,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         bIsActive=user.bIsActive,
         dFechaRegistro=user.dAlta,
         dFechaModificacion=user.dModificacion,
-        dFechaBaja=user.dBaja if user.dBaja is not None else None
+        dFechaBaja=user.dBaja if user.dBaja is not None else None,
+        cRoles=user.cRoles,
     )

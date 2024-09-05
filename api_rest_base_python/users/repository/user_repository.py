@@ -1,7 +1,15 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from users.models.users_model import Users 
-from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput, UserValidaLogin, GetUserByUuid
+from users.schemas.users_schema import ( 
+        AddUserInput,
+        UserOutput,
+        UpdateUserInput,
+        DeleteUserInput,
+        UserValidaLogin,
+        GetUserByUuid,
+        Roles
+    )
 from typing import List, Optional, Type
 from pydantic import ValidationError, UUID4
 from datetime import datetime, timezone
@@ -17,7 +25,10 @@ class UserRepository:
                 cNombre=user.cNombre,
                 cApellido=user.cApellido,
                 cEmail=user.cEmail,
-                cPassword=user.cPassword
+                cPassword=user.cPassword,
+                #agregar los roles desde un array
+                cRoles = user.cRoles
+
             )
             self.session.add(new_user)
             self.session.commit()
@@ -30,7 +41,8 @@ class UserRepository:
                 bIsActive=new_user.bIsActive,
                 dFechaRegistro=new_user.dAlta,
                 dFechaModificacion=new_user.dModificacion,
-                dFechaBaja=new_user.dBaja if new_user.dBaja is not None else None
+                dFechaBaja=new_user.dBaja if new_user.dBaja is not None else None,
+                cRoles=new_user.cRoles
 
             )
         except Exception as e:
@@ -59,7 +71,8 @@ class UserRepository:
                 bIsActive=user.bIsActive,
                 dFechaRegistro=user.dAlta,
                 dFechaModificacion=user.dModificacion,
-                dFechaBaja=user.dBaja if user.dBaja is not None else None
+                dFechaBaja=user.dBaja if user.dBaja is not None else None,
+                cRoles=user.cRoles
 
             )
         except Exception as e:
@@ -80,6 +93,7 @@ class UserRepository:
             user.cApellido = user_input.cApellido if user_input.cApellido is not None else user.cApellido
             user.cEmail = user_input.cEmail if user_input.cEmail is not None else user.cEmail
             user.dModificacion = fecha
+            user.cRoles = user_input.cRoles if user_input.cRoles is not None else user.cRoles
             self.session.commit()
             self.session.refresh(user)
             return UserOutput(
@@ -90,7 +104,8 @@ class UserRepository:
                 bIsActive=user.bIsActive,
                 dFechaRegistro=user.dAlta,
                 dFechaModificacion=user.dModificacion,
-                dFechaBaja=user.dBaja if user.dBaja is not None else None
+                dFechaBaja=user.dBaja if user.dBaja is not None else None,
+                cRoles=user.cRoles
             )
         except Exception as e:
             self.session.rollback()
@@ -116,7 +131,8 @@ class UserRepository:
                 bIsActive=user.bIsActive,
                 dFechaRegistro=user.dAlta,
                 dFechaModificacion=user.dModificacion,
-                dFechaBaja=user.dBaja if user.dBaja is not None else None
+                dFechaBaja=user.dBaja if user.dBaja is not None else None,
+                cRoles=user.cRoles
             )
         except Exception as e:
             self.session.rollback()
@@ -141,7 +157,9 @@ class UserRepository:
                 bIsActive=user.bIsActive,
                 dFechaRegistro=user.dAlta,
                 dFechaModificacion=user.dModificacion,
-                dFechaBaja=user.dBaja if user.dBaja is not None else None
+                dFechaBaja=user.dBaja if user.dBaja is not None else None,
+                cRoles=user.cRoles
+
             )
         except Exception as e:
             self.session.rollback()
@@ -169,7 +187,8 @@ class UserRepository:
                 bIsActive=user.bIsActive,
                 dFechaRegistro=user.dAlta,
                 dFechaModificacion=user.dModificacion,
-                dFechaBaja=user.dBaja if user.dBaja is not None else None
+                dFechaBaja=user.dBaja if user.dBaja is not None else None,
+                cRoles=user.cRoles
             ) for user in users]
         except Exception as e:
             raise e

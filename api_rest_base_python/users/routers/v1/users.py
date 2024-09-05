@@ -7,6 +7,9 @@ from config.db_config import get_db
 from users.schemas.users_schema import AddUserInput, UserOutput, UpdateUserInput, DeleteUserInput, GetUserByUuid
 from users.services.user_service import UserService
 
+from auth.services.auth_service import AuthService
+from auth.services.auth import get_current_user
+
 router = APIRouter(
     prefix="/users",
     tags=["users"],
@@ -14,7 +17,7 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=UserOutput)
-def register_user(user: AddUserInput, db: Session = Depends(get_db)):
+def register_user(user: AddUserInput, db: Session = Depends(get_db), auth_service: AuthService = Depends( get_current_user  )):
     _service = UserService(db)
     return _service.create(user)
 
