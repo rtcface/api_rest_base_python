@@ -26,7 +26,7 @@ class AuthService:
         json_data = json.dumps({"sub": str(user.uuid)})
         return {
             "access_token": create_access_token(
-                data={"sub": str(user.uuid)}, expires_delta=access_token_expires
+                data={"sub": str(user.uuid), "scopes":user.cRoles }, expires_delta=access_token_expires
             ),
             "token_type": "bearer",
         }

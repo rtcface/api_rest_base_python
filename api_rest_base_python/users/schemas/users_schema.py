@@ -39,6 +39,7 @@ class DeleteUserInput(BaseModel):
 
 class TokenData(BaseModel):
     uuid: Optional[str] = None
+    scopes: list[str] = []
 
 
 class GetUserByUuid(TokenData):
