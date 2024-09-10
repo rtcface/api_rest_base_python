@@ -24,9 +24,14 @@ class AuthService:
             raise HTTPException(status_code=400, detail="Incorrect email or password")
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         json_data = json.dumps({"sub": str(user.uuid)})
+        scope_roles = []
+        if len(user.cRoles) > 0:
+            for role in user.cRoles:
+                scope_roles.append(role+":"+role)
+
         return {
             "access_token": create_access_token(
-                data={"sub": str(user.uuid), "scopes":user.cRoles }, expires_delta=access_token_expires
+                data={"sub": str(user.uuid), "scopes":scope_roles},
             ),
             "token_type": "bearer",
         }

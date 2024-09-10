@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
+
 from sqlalchemy import and_
 from users.models.users_model import Users 
 from users.schemas.users_schema import ( 
@@ -26,7 +28,6 @@ class UserRepository:
                 cApellido=user.cApellido,
                 cEmail=user.cEmail,
                 cPassword=user.cPassword,
-                #agregar los roles desde un array
                 cRoles = user.cRoles
 
             )
@@ -47,8 +48,7 @@ class UserRepository:
             )
         except Exception as e:
             self.session.rollback()
-            raise e
-
+            return None
     def user_exists_by_email(self, email: str) -> bool:
         try:
             user = self.session.query(Users).filter(Users.cEmail == email).first()
@@ -62,7 +62,7 @@ class UserRepository:
         try:
             user = self.session.query(Users).filter(Users.uuid == uuid).first()
             if user is None:
-                raise ValueError(f"User with UUID {uuid} not found")
+                return None
             return UserOutput(
                 id=user.uuid,
                 cNombre=user.cNombre,
@@ -76,10 +76,10 @@ class UserRepository:
 
             )
         except Exception as e:
-            raise e
+            return None
 
     def get_user_by_email(self, email: str) -> UserValidaLogin:
-        return self.session.query(Users).filter(and_(Users.cEmail == email, Users.bIsActive == True)).first()
+        return self.session.query(Users).filter(and_(Users.cEmail == email)).first()
         
     def update(self, user_input: UpdateUserInput) -> UserOutput:
         try:
@@ -88,7 +88,7 @@ class UserRepository:
 
             user = self.session.query(Users).filter(Users.uuid == user_input.uuid).first()
             if user is None:
-                raise ValueError(f"User with UUID {user_input.uuid} not found")
+                raise HTTPException(status_code=404, detail="User not found")
             user.cNombre = user_input.cNombre if user_input.cNombre is not None else user.cNombre
             user.cApellido = user_input.cApellido if user_input.cApellido is not None else user.cApellido
             user.cEmail = user_input.cEmail if user_input.cEmail is not None else user.cEmail

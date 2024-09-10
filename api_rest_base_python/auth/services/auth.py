@@ -1,3 +1,6 @@
+from typing import Annotated
+
+
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jose import JWTError, jwt
@@ -7,7 +10,7 @@ from config.db_config import get_db
 from users.models.users_model import Users
 from users.schemas.users_schema import TokenData, UserOutput
 from config.settings import settings
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", scopes={"SUPER_ADMIN": "SUPER_ADMIN", "ADMIN":"ADMIN","User": "USER" })
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", scopes={"SUPER_ADMIN": "SUPER_ADMIN", "ADMIN":"ADMIN","USER": "USER" })
 
 def get_user(db: Session, uuid: str):
     return db.query(Users).filter(Users.uuid == uuid).first()

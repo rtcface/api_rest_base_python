@@ -26,10 +26,16 @@ class UserService:
         EmailValidator().validate(user.cEmail)
         hashed_password = get_password_hash(user.cPassword)
         user.cPassword = hashed_password
-        return self.repository.create(user)
+        user=self.repository.create(user)
+        if user is None:
+            raise HTTPException(status_code=500, detail="Error creating user")
+        return user
     
     def get(self, uuid: UUID4) -> UserOutput:
-        return self.repository.get(uuid)
+        user = self.repository.get(uuid)
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        return user
     
     def update(self, user: UpdateUserInput) -> UserOutput:
         return self.repository.update(user)
